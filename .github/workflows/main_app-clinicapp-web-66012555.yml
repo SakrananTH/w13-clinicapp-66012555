@@ -63,5 +63,5 @@ jobs:
         with:
           app-name: 'app-clinicapp-web-66012555'
           slot-name: 'Production'
-          package: .
+          package: web/dist
           
