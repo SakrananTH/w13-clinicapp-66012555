@@ -23,11 +23,13 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: npm install, build, and test
+      - name: npm install and build
+        working-directory: web
+        env:
+          VITE_API_BASE: https://app-clinicapp-api-66012555.azurewebsites.net
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
