@@ -10,44 +10,47 @@ const PORT = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (_req, res) => res.json({ ok: true, service: 'clinic-api' }));
+app.get('/', (_req, res) => res.json({ ok: true, service: 'accommodation-api' }));
 
-app.get('/doctors', async (_req, res, next) => {
+app.get('/rooms', async (_req, res, next) => {
   try {
     const pool = await getSqlPool();
     const r = await pool.request()
-      .query('SELECT id, name, specialty FROM doctors ORDER BY name');
+      .query('SELECT id, name, type, price FROM rooms ORDER BY name');
     res.json(r.recordset);
   } catch (e) { next(e); }
 });
 
-app.get('/appointments', async (_req, res, next) => {
+app.get('/bookings', async (_req, res, next) => {
   try {
     const pool = await getSqlPool();
     const r = await pool.request().query(`
-      SELECT a.id, a.patient_name, a.slot, d.name AS doctor_name, d.specialty
-      FROM appointments a JOIN doctors d ON a.doctor_id = d.id
-      ORDER BY a.slot
+      SELECT b.id, b.guest_name, b.check_in, b.check_out,
+             r.name AS room_name, r.type AS room_type, r.price
+      FROM bookings b JOIN rooms r ON b.room_id = r.id
+      ORDER BY b.check_in
     `);
     res.json(r.recordset);
   } catch (e) { next(e); }
 });
 
-app.post('/appointments', async (req, res, next) => {
-  const { doctor_id, patient_name, slot } = req.body || {};
-  if (!doctor_id || !patient_name || !slot) {
-    return res.status(400).json({ error: 'doctor_id, patient_name, slot are required' });
+app.post('/bookings', async (req, res, next) => {
+  const { room_id, guest_name, check_in, check_out } = req.body || {};
+  if (!room_id || !guest_name || !check_in || !check_out) {
+    return res.status(400).json({ error: 'room_id, guest_name, check_in, check_out are required' });
   }
   try {
     const pool = await getSqlPool();
     const r = await pool.request()
-      .input('doctor_id', sql.Int, Number(doctor_id))
-      .input('patient_name', sql.NVarChar(200), String(patient_name))
-      .input('slot', sql.DateTime2, new Date(slot))
+      .input('room_id', sql.Int, Number(room_id))
+      .input('guest_name', sql.NVarChar(200), String(guest_name))
+      .input('check_in', sql.DateTime2, new Date(check_in))
+      .input('check_out', sql.DateTime2, new Date(check_out))
       .query(`
-        INSERT INTO appointments (doctor_id, patient_name, slot)
-        OUTPUT INSERTED.id, INSERTED.doctor_id, INSERTED.patient_name, INSERTED.slot
-        VALUES (@doctor_id, @patient_name, @slot)
+        INSERT INTO bookings (room_id, guest_name, check_in, check_out)
+        OUTPUT INSERTED.id, INSERTED.room_id, INSERTED.guest_name,
+               INSERTED.check_in, INSERTED.check_out
+        VALUES (@room_id, @guest_name, @check_in, @check_out)
       `);
     res.status(201).json(r.recordset[0]);
   } catch (e) { next(e); }
@@ -65,5 +68,5 @@ app.use((err, _req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`clinic-api listening on :${PORT}`);
+  console.log(`accommodation-api listening on :${PORT}`);
 });

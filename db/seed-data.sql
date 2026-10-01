@@ -1,9 +1,9 @@
--- W13 Clinic App — seed data (run after schema.sql)
--- 5 sample doctors for Bangkok Hospital clinic demo
+-- W13 Accommodation Booking App — seed data (run after schema.sql)
+-- 5 sample rooms for a Bangkok hotel demo
 
-INSERT INTO doctors (name, specialty) VALUES
-  (N'Nattaya Petchroong',  N'Cardiology'),
-  (N'Somchai Wattanachai', N'Pediatrics'),
-  (N'Pim Suwannarat',      N'Orthopedics'),
-  (N'Anan Kongsawat',      N'Internal Medicine'),
-  (N'Kornkrit Prasertsuk', N'Dermatology');
+INSERT INTO rooms (name, type, price) VALUES
+  (N'ห้อง Deluxe 101', N'Deluxe', 2500.00),
+  (N'ห้อง Deluxe 102', N'Deluxe', 2500.00),
+  (N'ห้อง Suite 201',  N'Suite',  4500.00),
+  (N'ห้อง Family 301', N'Family', 3800.00),
+  (N'ห้อง Standard 401', N'Standard', 1800.00);

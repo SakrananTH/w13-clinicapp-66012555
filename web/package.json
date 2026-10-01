@@ -1,8 +1,8 @@
 {
-  "name": "clinic-web",
+  "name": "accommodation-web",
   "version": "1.0.0",
   "private": true,
-  "description": "W13 clinic appointment front-end — React + Vite",
+  "description": "W13 accommodation booking front-end — React + Vite",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,7 +14,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.10"
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.2"
   }
 }

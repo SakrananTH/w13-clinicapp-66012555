@@ -1,8 +1,8 @@
 {
-  "name": "clinic-api",
+  "name": "accommodation-api",
   "version": "1.0.0",
   "private": true,
-  "description": "W13 clinic appointment API — Node.js + Express + Azure SQL",
+  "description": "W13 accommodation booking API — Node.js + Express + Azure SQL",
   "type": "module",
   "main": "index.js",
   "scripts": {

@@ -1,13 +1,13 @@
-# W13 Clinic App — Starter
+# W13 Accommodation Booking App — Starter
 
 **225381 · Application Development with Cloud Platform · Week 13**
 **จัดทำ:** 17 กันยายน 2026 · โดยน้องวิจัย Oracle (AI-generated — พี่กิ๊กตรวจก่อนใช้)
 
-A small Bangkok Hospital clinic appointment app. Three resources on Azure:
+A small Bangkok hotel room booking app. Three resources on Azure:
 
-- **App Service** (`app-clinicapp-api-dev`) — Node.js 20 LTS Express API
-- **Static Web App** (`app-clinicapp-web-dev`) — React + Vite front-end
-- **Azure SQL Database** (`clinicdb`) — doctors + appointments
+- **App Service** (`app-clinicapp-api-66012555`) — Node.js 20 LTS Express API
+- **Web App** (`app-clinicapp-web-66012555`) — React + Vite front-end
+- **Azure SQL Database** (`free-sql-db-9978530`) — rooms + bookings
 
 ## Layout
 
@@ -17,8 +17,8 @@ w13-clinicapp-starter/
 ├── .gitignore
 ├── .env.example
 ├── db/
-│   ├── schema.sql         -- CREATE TABLE doctors + appointments
-│   └── seed-data.sql      -- 5 sample doctors
+│   ├── schema.sql         -- CREATE TABLE rooms + bookings
+│   └── seed-data.sql      -- 5 sample rooms
 ├── server/                -- Express API
 │   ├── package.json
 │   ├── index.js
@@ -38,9 +38,9 @@ w13-clinicapp-starter/
 ## What it does
 
 - `GET /` — health check
-- `GET /doctors` — list doctors (JSON)
-- `GET /appointments` — list appointments joined with doctor
-- `POST /appointments` — book an appointment
+- `GET /rooms` — list rooms (JSON)
+- `GET /bookings` — list bookings joined with room
+- `POST /bookings` — book a room
 
 ## Run locally (no Azure needed)
 
@@ -53,7 +53,7 @@ cd web;    npm install; cd ..
 cd server
 copy .env.example .env
 # leave AZURE_SQL_CONNECTION_STRING empty for now
-npm run dev          # http://localhost:8080  (server boots; /doctors returns 503)
+npm run dev          # http://localhost:8080  (server boots; /rooms returns 503)
 
 # 3. start front-end (terminal 2)
 cd web
@@ -69,22 +69,22 @@ Without a database, the UI shows a clear "Error: database_not_configured" — th
 2. `server/.env` → paste into `AZURE_SQL_CONNECTION_STRING=...`
 3. Load schema: Azure Portal → SQL database → **Query editor** → paste contents of `db/schema.sql` → Run
 4. Then paste `db/seed-data.sql` → Run
-5. `cd server && npm run dev` → visit `http://localhost:8080/doctors` → should return 5 doctors
+5. `cd server && npm run dev` → visit `http://localhost:8080/rooms` → should return 5 rooms
 
 ## Deploy to Azure
 
 ### Backend → App Service
 
-1. Azure Portal → **App Services** → Create `app-clinicapp-api-dev` (Node 20 LTS, F1 free tier)
+1. Azure Portal → **App Services** → use `app-clinicapp-api-66012555` (Node 20 LTS)
 2. **Deployment Center** → GitHub → select your repo → **App Service** builds a workflow automatically
 3. **Configuration** → Application settings → add:
    - `AZURE_SQL_CONNECTION_STRING` = (your string)
    - `SCM_DO_BUILD_DURING_DEPLOYMENT` = `true` (so `npm install` runs on the server)
-4. Push to GitHub → Actions deploys → check `https://app-clinicapp-api-dev.azurewebsites.net/doctors`
+4. Push to GitHub → Actions deploys → check `https://app-clinicapp-api-66012555.azurewebsites.net/rooms`
 
 ### Front-end → Static Web App
 
-1. Azure Portal → **Static Web Apps** → Create `app-clinicapp-web-dev` → Connect to GitHub → pick your repo
+1. Azure Portal → **App Services** → use `app-clinicapp-web-66012555` → connect the frontend deployment
 2. Build preset: **Vite** · App location: `web` · Output location: `dist`
 3. Azure auto-creates `.github/workflows/azure-static-web-apps-*.yml`
 4. Push → Actions deploys → get the public URL
@@ -103,9 +103,9 @@ Without a database, the UI shows a clear "Error: database_not_configured" — th
 
 | Rubric check | Endpoint | Status |
 |--------------|----------|--------|
-| API responds GET /doctors with JSON | `GET /doctors` | ✅ implemented |
-| Front-end renders doctor list | `web/src/App.jsx` | ✅ implemented |
-| Booking persists to SQL DB | `POST /appointments` | ✅ implemented |
+| API responds GET /rooms with JSON | `GET /rooms` | ✅ implemented |
+| Front-end renders room list | `web/src/App.jsx` | ✅ implemented |
+| Booking persists to SQL DB | `POST /bookings` | ✅ implemented |
 | Auto-deploy on push | GitHub Actions (Azure-generated) | ✅ wired |
 | Reflection | (student-written) | — |
 
