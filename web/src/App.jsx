@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
@@ -22,21 +22,24 @@ export default function App() {
   const [form, setForm] = useState({ doctor_id: '', patient_name: '', slot: '' });
   const [submitting, setSubmitting] = useState(false);
   const [cancellingId, setCancellingId] = useState(null);
+  const loadRequestRef = useRef(0);
 
   async function load() {
+    const requestId = ++loadRequestRef.current;
     try {
       setError(null);
       const [d, a] = await Promise.all([
         fetch(`${API_BASE}/doctors`).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e))),
         fetch(`${API_BASE}/appointments`).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e))),
       ]);
+      if (requestId !== loadRequestRef.current) return;
       setDoctors(d);
       setAppointments(a);
       if (d.length && !form.doctor_id) setForm(f => ({ ...f, doctor_id: d[0].id }));
     } catch (e) {
-      setError(getUserErrorMessage(e));
+      if (requestId === loadRequestRef.current) setError(getUserErrorMessage(e));
     } finally {
-      setLoading(false);
+      if (requestId === loadRequestRef.current) setLoading(false);
     }
   }
 
