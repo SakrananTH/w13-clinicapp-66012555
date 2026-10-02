@@ -69,7 +69,6 @@ export default function App() {
   }
 
   async function onCancel(id) {
-    if (!confirm('ยกเลิกนัดนี้จริงไหม?')) return;
     setCancellingId(id);
     setError(null);
     try {
@@ -78,7 +77,7 @@ export default function App() {
         const e = await r.json().catch(() => ({ error: 'http_error' }));
         throw e;
       }
-      await load();
+      setAppointments(current => current.filter(appointment => appointment.id !== id));
     } catch (e) {
       setError(getUserErrorMessage(e));
     } finally {
