@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql';
@@ -53,6 +54,23 @@ app.post('/appointments', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+app.delete('/appointments/:id', async (req, res, next) => {
+  const appointmentId = Number(req.params.id);
+  if (!Number.isInteger(appointmentId) || appointmentId <= 0) {
+    return res.status(400).json({ error: 'invalid_id' });
+  }
+  try {
+    const pool = await getSqlPool();
+    const r = await pool.request()
+      .input('id', sql.Int, appointmentId)
+      .query('DELETE FROM appointments WHERE id = @id');
+    if (!r.rowsAffected[0]) {
+      return res.status(404).json({ error: 'appointment_not_found' });
+    }
+    res.status(204).end();
+  } catch (e) { next(e); }
+});
+
 app.use((err, _req, res, _next) => {
   if (err.code === 'NO_DB_CONFIG') {
     return res.status(503).json({
@@ -64,6 +82,11 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'internal_error', message: err.message });
 });
 
-app.listen(PORT, () => {
-  console.log(`clinic-api listening on :${PORT}`);
-});
+const isDirectRun = process.argv[1] === fileURLToPath(import.meta.url);
+if (isDirectRun) {
+  app.listen(PORT, () => {
+    console.log(`clinic-api listening on port ${PORT}`);
+  });
+}
+
+export default app;
